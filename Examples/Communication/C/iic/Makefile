@@ -1,34 +1,27 @@
-
-#
-#  Red Pitaya IIC Makefile
-#  Author: Luka Golinar <luka.golinar@gmail.com>
-#
-
-# Versioning system
-VERSION ?= 0.00-0000
-
-REVISION ?= devbuild
-
 #Cross compiler definition
 CC = $(CROSS_COMPILE)gcc
-#Flags
-CFLAGS = -g -std=gnu99 -Wall -Werror
-CFLAGS += -I../../api/include
-CFLAGS += -L ../../api/lib -lm -lpthread -lrp
-#Objects
-OBJECTS = iic.o
-#Target file
-TARGET = iic_test
+RM = rm
 
-$(TARGET): $(OBJECTS)
-	$(CC) -o $@ $^ $(CFLAGS)
+#-Wall
+CFLAGS  = -g -std=gnu99 -Wall -Werror
+CFLAGS += -Ikiss_fft
+CFLAGS += -I../../../../api/include
+CFLAGS += -I../../../../api/rpbase/src
+CFLAGS += -L../../../../api/lib -lm -lpthread -lrp
+CFLAGS += kiss_fft.c -lm
+CFLAGS += kiss_fftr.c -lm
+CFLAGS += -DFIXED_POINT=32
+CFLAGS += -DDEBUG
+
+
+SRCS=$(wildcard *iic.c)
+OBJS=$(SRCS:.c=)
+
+all: $(OBJS)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-#Build the executable
-all: $(TARGET)
-
 clean:
-	$(RM) $(TARGET) *.o ~*
-
+	$(RM) *.o
+	$(RM) $(OBJ)
